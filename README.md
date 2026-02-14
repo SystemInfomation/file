@@ -1,6 +1,6 @@
 # File Transfer - Temporary File Sharing App
 
-A complete, production-ready temporary file-sharing web application inspired by filetransfer.io. Share files securely using 6-digit codes with automatic deletion after 10 minutes.
+A complete, production-ready temporary file-sharing web appication inspired by filetransfer.io. Share files securely using 6-digit codes with automatic deletion after 10 minutes.
 
 ## Features
 
