@@ -7,7 +7,7 @@ echo "=================================="
 
 # Check if backend is running
 echo -n "Checking backend health... "
-if curl -s http://localhost:3001/api/health > /dev/null 2>&1; then
+if curl -s https://file-lc4x.onrender.com/api/health > /dev/null 2>&1; then
     echo "✓ Backend is running"
 else
     echo "✗ Backend is not running. Please start it first."
@@ -27,7 +27,7 @@ RESPONSE=$(curl -s -X POST \
   -F "files=@/tmp/file-transfer-test/test1.txt" \
   -F "files=@/tmp/file-transfer-test/test2.txt" \
   -F "files=@/tmp/file-transfer-test/test3.txt" \
-  http://localhost:3001/api/upload)
+  https://file-lc4x.onrender.com/api/upload)
 
 CODE=$(echo $RESPONSE | grep -o '"code":"[0-9]*"' | cut -d'"' -f4)
 
@@ -37,7 +37,7 @@ if [ -n "$CODE" ]; then
     
     # Get transfer info
     echo -n "Retrieving transfer info... "
-    TRANSFER_INFO=$(curl -s http://localhost:3001/api/transfer/$CODE)
+    TRANSFER_INFO=$(curl -s https://file-lc4x.onrender.com/api/transfer/$CODE)
     FILE_COUNT=$(echo $TRANSFER_INFO | grep -o '"name":"[^"]*"' | wc -l)
     
     if [ "$FILE_COUNT" -eq 3 ]; then
@@ -47,14 +47,14 @@ if [ -n "$CODE" ]; then
         echo "Testing downloads..."
         FILE_ID=$(echo $TRANSFER_INFO | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
         
-        curl -s -o /tmp/downloaded-file.txt "http://localhost:3001/api/download/$CODE/$FILE_ID"
+        curl -s -o /tmp/downloaded-file.txt "https://file-lc4x.onrender.com/api/download/$CODE/$FILE_ID"
         if [ -f /tmp/downloaded-file.txt ]; then
             echo "✓ Single file download works"
         else
             echo "✗ Single file download failed"
         fi
         
-        curl -s -o /tmp/transfer-all.zip "http://localhost:3001/api/download-all/$CODE"
+        curl -s -o /tmp/transfer-all.zip "https://file-lc4x.onrender.com/api/download-all/$CODE"
         if [ -f /tmp/transfer-all.zip ]; then
             echo "✓ ZIP download works"
         else
