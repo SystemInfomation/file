@@ -24,8 +24,8 @@
    - `UPLOADS_DIR` = `/tmp`
 6. [ ] Click "Create Web Service"
 7. [ ] Wait for deployment to complete
-8. [ ] Copy your backend URL (e.g., `https://file-transfer-backend.onrender.com`)
-9. [ ] Test the health endpoint: `https://your-backend.onrender.com/api/health`
+8. [ ] **Backend URL**: `https://file-lc4x.onrender.com`
+9. [ ] Test the health endpoint: `https://file-lc4x.onrender.com/api/health`
 
 ## Frontend Deployment (GitHub Pages)
 
@@ -34,20 +34,18 @@
 1. [ ] Go to your GitHub repository
 2. [ ] Navigate to **Settings** > **Pages**
 3. [ ] Under **Source**, select **GitHub Actions**
-4. [ ] Go to **Settings** > **Secrets and variables** > **Actions**
-5. [ ] Click **New repository secret**
-   - **Name**: `BACKEND_URL`
-   - **Value**: Your Render backend URL (e.g., `https://file-transfer-backend.onrender.com`)
-6. [ ] Merge your code to the `main` branch (or manually trigger the workflow)
-7. [ ] Go to the **Actions** tab to monitor the deployment
-8. [ ] Once complete, your site will be live at `https://yourusername.github.io/file/`
+4. [ ] Merge your code to the `main` branch (or manually trigger the workflow)
+5. [ ] Go to the **Actions** tab to monitor the deployment
+6. [ ] Once complete, your site will be live at `https://forsyth-county.github.io/file/`
+
+**Note**: The backend URL (`https://file-lc4x.onrender.com`) is hardcoded in the GitHub Actions workflow.
 
 ### Method 2: Manual Deployment
 
 1. [ ] Clone the repository locally
-2. [ ] Create `frontend/.env.local`:
+2. [ ] Create `frontend/.env`:
    ```
-   NEXT_PUBLIC_BACKEND_URL=https://your-backend.onrender.com
+   NEXT_PUBLIC_BACKEND_URL=https://file-lc4x.onrender.com
    ```
 3. [ ] Build the frontend:
    ```bash
@@ -64,21 +62,28 @@
 
 ### Update Backend CORS
 
-1. [ ] Edit `backend/server.js`
-2. [ ] Update CORS configuration to allow your GitHub Pages domain:
-   ```javascript
-   app.use(cors({
-     origin: ['https://yourusername.github.io', 'http://localhost:3000'],
-     methods: ['GET', 'POST', 'OPTIONS'],
-     allowedHeaders: ['Content-Type']
-   }));
-   ```
-3. [ ] Commit and push changes
-4. [ ] Render will automatically redeploy
+The backend CORS is already configured to allow the GitHub Pages domain:
+
+```javascript
+app.use(cors({
+  origin: 'https://forsyth-county.github.io', // Frontend URL
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type']
+}));
+```
+
+For local development, you may need to temporarily change this to:
+```javascript
+app.use(cors({
+  origin: ['https://forsyth-county.github.io', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type']
+}));
+```
 
 ## Verification
 
-1. [ ] Visit your GitHub Pages URL
+1. [ ] Visit your GitHub Pages URL: `https://forsyth-county.github.io/file/`
 2. [ ] Test uploading files
 3. [ ] Verify you get a 6-digit code
 4. [ ] Test downloading files with the code
@@ -99,12 +104,13 @@
 ## Troubleshooting
 
 ### Frontend can't connect to backend
-- Check CORS settings in backend
-- Verify `BACKEND_URL` secret is set correctly
+- The backend URL is hardcoded as `https://file-lc4x.onrender.com`
+- Check CORS settings in backend (should allow `https://forsyth-county.github.io`)
 - Ensure backend is using HTTPS
 
-### 404 errors on page refresh
-- GitHub Pages should handle this automatically with Next.js export
+### 404 errors on page refresh or static assets
+- Fixed by adding `basePath: '/file'` in `next.config.js`
+- GitHub Pages serves the app from `/file/` subdirectory
 - Check that `.nojekyll` file exists in output
 
 ### Files not uploading
