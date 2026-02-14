@@ -91,59 +91,38 @@ npm run dev
 
 ## Deployment
 
+**Live Application**: 
+- **Frontend**: https://forsyth-county.github.io/file/
+- **Backend**: https://file-lc4x.onrender.com
+
 ### Backend (Render.com)
 
-1. Create a new Web Service on Render.com
-2. Connect your GitHub repository
-3. Configure:
-   - **Root Directory**: `backend`
-   - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
-   - **Environment Variables**: 
-     - `PORT`: (auto-set by Render)
-     - `UPLOADS_DIR`: `/tmp` (recommended for Render)
+The backend is deployed at `https://file-lc4x.onrender.com`
 
-4. Deploy and note your service URL (e.g., `https://your-app.onrender.com`)
+Configuration:
+- **Root Directory**: `backend`
+- **Build Command**: `npm install`
+- **Start Command**: `npm start`
+- **Environment Variables**: 
+  - `PORT`: (auto-set by Render)
+  - `UPLOADS_DIR`: `/tmp`
+  - `ALLOWED_ORIGINS`: `https://forsyth-county.github.io`
 
 ### Frontend (GitHub Pages)
 
-#### Option 1: Automatic Deployment (Recommended)
+The frontend is deployed at `https://forsyth-county.github.io/file/`
+
+#### Automatic Deployment via GitHub Actions
 
 This repository includes a GitHub Actions workflow that automatically deploys to GitHub Pages when you push to the main branch.
 
-1. Go to your GitHub repository settings
-2. Navigate to **Settings** > **Pages**
-3. Under **Source**, select **GitHub Actions**
-4. Add your backend URL as a repository secret:
-   - Go to **Settings** > **Secrets and variables** > **Actions**
-   - Click **New repository secret**
-   - Name: `BACKEND_URL`
-   - Value: `https://your-backend.onrender.com` (your Render backend URL)
-5. Push to the main branch or manually trigger the workflow
-6. Your site will be available at `https://yourusername.github.io/file/`
+**Configuration**:
+1. GitHub Pages is configured to use GitHub Actions as the source
+2. The workflow builds the Next.js app with `basePath: '/file'` 
+3. Backend URL is hardcoded as `https://file-lc4x.onrender.com`
+4. Deploys the static output to GitHub Pages
 
-#### Option 2: Manual Deployment
-
-1. Update the backend URL:
-   - Create `.env.local` in frontend directory:
-     ```
-     NEXT_PUBLIC_BACKEND_URL=https://your-backend.onrender.com
-     ```
-   - Or update `frontend/config.js` directly
-
-2. Build the static site:
-```bash
-cd frontend
-npm run build
-```
-
-3. The static files will be in `frontend/out/`
-
-4. Deploy to GitHub Pages:
-   - Create a new branch (e.g., `gh-pages`)
-   - Copy the contents of `frontend/out/` to the root of this branch
-   - Push to GitHub
-   - Enable GitHub Pages in repository settings, pointing to the `gh-pages` branch
+For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Configuration
 
@@ -154,15 +133,17 @@ npm run build
 
 ### Frontend Environment Variables
 
-- `NEXT_PUBLIC_BACKEND_URL`: Backend API URL (default: `http://localhost:3001`)
+- `NEXT_PUBLIC_BACKEND_URL`: Backend API URL
+  - Production: `https://file-lc4x.onrender.com` (hardcoded in GitHub Actions)
+  - Development: `http://localhost:3001` (default)
 
 ### Important Notes for GitHub Pages Deployment
 
-1. **CORS Configuration**: Ensure your backend CORS settings allow requests from your GitHub Pages domain
-2. **HTTPS Required**: GitHub Pages serves over HTTPS, so your backend must support HTTPS (Render.com provides this automatically)
-3. **Backend URL**: Set the `BACKEND_URL` secret in your GitHub repository for automatic deployments
-4. **Custom Domain**: You can configure a custom domain in GitHub Pages settings if desired
-5. **Base Path**: This setup works for repository pages (e.g., `username.github.io/file/`)
+1. **Base Path**: The app is configured with `basePath: '/file'` in `next.config.js` to work with GitHub Pages repository deployment at `https://forsyth-county.github.io/file/`
+2. **CORS Configuration**: Backend allows requests from `https://forsyth-county.github.io` (and `http://localhost:3000` for local development)
+3. **HTTPS Required**: Both frontend and backend use HTTPS in production
+4. **Static Export**: Next.js is configured with `output: 'export'` for static site generation
+5. **Asset URLs**: All static assets are prefixed with `/file/` base path
 
 ## Usage
 
