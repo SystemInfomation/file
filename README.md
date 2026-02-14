@@ -118,7 +118,6 @@ npm run dev
 ```bash
 cd frontend
 npm run build
-npm run export
 ```
 
 3. The static files will be in `frontend/out/`
