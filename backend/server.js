@@ -25,7 +25,7 @@ const transfers = new Map();
 
 // CORS configuration
 app.use(cors({
-  origin: '*', // Allow all origins for now; restrict in production
+  origin: 'https://forsyth-county.github.io', // Frontend URL
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type']
 }));
