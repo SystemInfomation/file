@@ -43,7 +43,7 @@
 ### Method 2: Manual Deployment
 
 1. [ ] Clone the repository locally
-2. [ ] Create `frontend/.env`:
+2. [ ] Create `frontend/.env.local`:
    ```
    NEXT_PUBLIC_BACKEND_URL=https://file-lc4x.onrender.com
    ```
@@ -60,22 +60,25 @@
 
 ## Post-Deployment Configuration
 
-### Update Backend CORS
+### Backend CORS Configuration
 
-The backend CORS is already configured to allow the GitHub Pages domain:
+The backend uses the `ALLOWED_ORIGINS` environment variable to configure CORS.
 
+**For Production (Render.com)**:
+- Set `ALLOWED_ORIGINS=https://forsyth-county.github.io` in Render.com environment variables
+
+**Default behavior** (when `ALLOWED_ORIGINS` is not set):
+- Allows both `https://forsyth-county.github.io` and `http://localhost:3000`
+- Suitable for local development
+
+The current configuration in `backend/server.js`:
 ```javascript
-app.use(cors({
-  origin: 'https://forsyth-county.github.io', // Frontend URL
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type']
-}));
-```
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['https://forsyth-county.github.io', 'http://localhost:3000'];
 
-For local development, you may need to temporarily change this to:
-```javascript
 app.use(cors({
-  origin: ['https://forsyth-county.github.io', 'http://localhost:3000'],
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type']
 }));
