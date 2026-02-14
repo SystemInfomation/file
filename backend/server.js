@@ -24,8 +24,12 @@ if (!fs.existsSync(UPLOADS_DIR)) {
 const transfers = new Map();
 
 // CORS configuration
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['https://forsyth-county.github.io', 'http://localhost:3000'];
+
 app.use(cors({
-  origin: '*', // Allow all origins for now; restrict in production
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type']
 }));
